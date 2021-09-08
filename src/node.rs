@@ -1,3 +1,5 @@
+use core::fmt::Debug;
+use std::collections::VecDeque;
 ///
 /// 
 /// 
@@ -7,7 +9,7 @@ pub struct Node<T> {
     children: Vec<Node<T>>,
 }
 
-impl<T> Node<T> {
+impl<T: Debug> Node<T> {
     ///
     /// create a Node
     /// 
@@ -87,6 +89,30 @@ impl<T> Node<T> {
         }
         return node;
     }
+
+    // tree traversal
+    // Preorder Traversal
+    pub fn deepth_first_search<F>(&self, f: F)
+        where F: Copy + Fn(&T) -> () {
+        f(self.data());
+        let children = self.children();
+        for child in children {
+            Self::deepth_first_search(child, f);
+        }
+    }
+
+    // Level Order Traversal
+    pub fn breadth_first_search<F>(&self, f: F) 
+        where F: Fn(&T) -> () {
+        let mut queue: VecDeque<&Node<T>> = VecDeque::new();
+        queue.push_back(self);
+        while let Some(node) = queue.pop_front() {
+            f(node.data());
+            for child in node.children() {
+                queue.push_back(child);
+            }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -159,5 +185,49 @@ mod tests{
         let level2_1 = root.child_by_path(&vec![0, 1, 0]);
         assert!(level2_1.is_some());
         assert_eq!(level2_1.unwrap().data(), &String::from("level2_1"));
+    }
+
+    //
+    //       ------------------o(root)---------------
+    //      /                                        \
+    //     o(level1_1)                               o(level1_2)
+    //    /           \                              /
+    //   o(level2_2)   o(level2_3)                  o(level2_1)
+    //
+    fn get_tree2() -> Node<String> {
+        let s = format!("root");
+        let mut root = Node::new(s);
+        let level1_data = String::from("level1_1");
+        let level1_2_data = String::from("level1_2");
+        let level2_1_data = String::from("level2_1");
+        let level2_2_data = String::from("level2_2");
+        let level2_3_data = String::from("level2_3");
+        let mut level1 = Node::new(level1_data.clone());
+        let mut level1_2 = Node::new(level1_2_data.clone());
+        let level2_1 = Node::new(level2_1_data.clone());
+        let level2_2 = Node::new(level2_2_data.clone());
+        let level2_3 = Node::new(level2_3_data.clone());
+        level1_2.add(level2_1);
+        level1.add(level2_2);
+        level1.add(level2_3);
+        root.add(level1);
+        root.add(level1_2);
+        return root;
+    }
+
+    #[test]
+    fn traversal_works() {
+        let mut root = get_tree2();
+        let mut dfs_str = String::new();
+        let mut bfs_str = String::new();
+        root.deepth_first_search(move | d | {
+            // dfs_str = format!("{}-{}", dfs_str, d);
+            println!("{}", d);
+        });
+        root.breadth_first_search(| d | {
+            // bfs_str.push_str(d.as_str());
+            println!("{}", d);
+        });
+        assert_eq!(dfs_str, String::from("-root-level1_1-level2_2-level2_3-level1_2-level2_1"))
     }
 }
