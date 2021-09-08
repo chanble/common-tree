@@ -1,9 +1,9 @@
 use core::fmt::Debug;
 use std::collections::VecDeque;
 ///
-/// 
-/// 
-/// 
+///
+///
+///
 pub struct Node<T> {
     data: T,
     children: Vec<Node<T>>,
@@ -12,7 +12,7 @@ pub struct Node<T> {
 impl<T: Debug> Node<T> {
     ///
     /// create a Node
-    /// 
+    ///
     pub fn new(data: T) -> Self {
         Node {
             data,
@@ -22,7 +22,7 @@ impl<T: Debug> Node<T> {
 
     ///
     /// add a node to this
-    /// 
+    ///
     pub fn add(&mut self, node: Node<T>) {
         self.children.push(node);
     }
@@ -93,7 +93,9 @@ impl<T: Debug> Node<T> {
     // tree traversal
     // Preorder Traversal
     pub fn deepth_first_search<F>(&self, f: F)
-        where F: Copy + Fn(&T) -> () {
+    where
+        F: Copy + Fn(&T) -> (),
+    {
         f(self.data());
         let children = self.children();
         for child in children {
@@ -102,8 +104,10 @@ impl<T: Debug> Node<T> {
     }
 
     // Level Order Traversal
-    pub fn breadth_first_search<F>(&self, f: F) 
-        where F: Fn(&T) -> () {
+    pub fn breadth_first_search<F>(&self, f: F)
+    where
+        F: Fn(&T) -> (),
+    {
         let mut queue: VecDeque<&Node<T>> = VecDeque::new();
         queue.push_back(self);
         while let Some(node) = queue.pop_front() {
@@ -116,7 +120,7 @@ impl<T: Debug> Node<T> {
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
     #[test]
     fn data_works() {
@@ -148,7 +152,10 @@ mod tests{
         assert_eq!(root.child(1).unwrap().data(), &level1_2_data);
         assert_eq!(root.child(0).unwrap().children.len(), 0);
         assert_eq!(root.child(1).unwrap().children.len(), 1);
-        assert_eq!(root.child(1).unwrap().child(0).unwrap().data(), &level2_1_data);
+        assert_eq!(
+            root.child(1).unwrap().child(0).unwrap().data(),
+            &level2_1_data
+        );
 
         let level2_2_data = String::from("level2_2");
         let level2_2 = Node::new(level2_2_data.clone());
@@ -220,14 +227,17 @@ mod tests{
         let mut root = get_tree2();
         let mut dfs_str = String::new();
         let mut bfs_str = String::new();
-        root.deepth_first_search(move | d | {
+        root.deepth_first_search(move |d| {
             // dfs_str = format!("{}-{}", dfs_str, d);
             println!("{}", d);
         });
-        root.breadth_first_search(| d | {
+        root.breadth_first_search(|d| {
             // bfs_str.push_str(d.as_str());
             println!("{}", d);
         });
-        assert_eq!(dfs_str, String::from("-root-level1_1-level2_2-level2_3-level1_2-level2_1"))
+        assert_eq!(
+            dfs_str,
+            String::from("-root-level1_1-level2_2-level2_3-level1_2-level2_1")
+        )
     }
 }
