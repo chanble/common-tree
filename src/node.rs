@@ -1,9 +1,7 @@
 
-//! node lib
-
 use std::collections::VecDeque;
 
-//! A tree node
+/// A tree node
 pub struct Node<T> {
     data: T,
     children: Vec<Node<T>>,

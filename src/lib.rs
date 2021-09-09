@@ -1,4 +1,3 @@
-//! Common tree lib
 //! 通用的树结构库
 //! 
 
