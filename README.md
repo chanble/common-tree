@@ -39,3 +39,9 @@ fn main() {
 }
 
 ```
+
+## run examples
+
+```
+cargo run --example hello
+```
