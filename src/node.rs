@@ -92,22 +92,18 @@ impl<T: Debug> Node<T> {
 
     // tree traversal
     // Preorder Traversal
-    pub fn deepth_first_search<F>(&self, f: F)
-    where
-        F: Copy + Fn(&T) -> (),
-    {
-        f(self.data());
-        let children = self.children();
-        for child in children {
-            Self::deepth_first_search(child, f);
-        }
+    pub fn deepth_first_search<F: FnMut(&T)>(&self, mut f: F) {
+        self.dfs_helper(&mut f);
     }
 
+    fn dfs_helper<F: FnMut(&T)>(&self, f: &mut F) {
+        f(self.data());
+        for child in self.children() {
+            child.dfs_helper(f);
+        }
+    }
     // Level Order Traversal
-    pub fn breadth_first_search<F>(&self, f: F)
-    where
-        F: Fn(&T) -> (),
-    {
+    pub fn breadth_first_search<F: FnMut(&T)>(&self, mut f: F) {
         let mut queue: VecDeque<&Node<T>> = VecDeque::new();
         queue.push_back(self);
         while let Some(node) = queue.pop_front() {
@@ -227,17 +223,21 @@ mod tests {
         let mut root = get_tree2();
         let mut dfs_str = String::new();
         let mut bfs_str = String::new();
-        root.deepth_first_search(move |d| {
-            // dfs_str = format!("{}-{}", dfs_str, d);
-            println!("{}", d);
-        });
-        root.breadth_first_search(|d| {
-            // bfs_str.push_str(d.as_str());
-            println!("{}", d);
+        root.deepth_first_search(|d| {
+            dfs_str = format!("{}-{}", dfs_str, d);
+            // println!("{}", d);
         });
         assert_eq!(
             dfs_str,
             String::from("-root-level1_1-level2_2-level2_3-level1_2-level2_1")
-        )
+        );
+        root.breadth_first_search(|d| {
+            bfs_str = format!("{}-{}", bfs_str, d);
+        });
+
+        assert_eq!(
+            bfs_str,
+            String::from("-root-level1_1-level1_2-level2_2-level2_3-level2_1")
+        );
     }
 }
