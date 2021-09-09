@@ -1,17 +1,18 @@
-use core::fmt::Debug;
+
+//! node lib
+
 use std::collections::VecDeque;
-///
-///
-///
-///
+
+//! A tree node
 pub struct Node<T> {
     data: T,
     children: Vec<Node<T>>,
 }
 
-impl<T: Debug> Node<T> {
+impl<T> Node<T> {
+
     ///
-    /// create a Node
+    /// Create a Node
     ///
     pub fn new(data: T) -> Self {
         Node {
@@ -21,50 +22,60 @@ impl<T: Debug> Node<T> {
     }
 
     ///
-    /// add a node to this
+    /// Add a node to self
     ///
     pub fn add(&mut self, node: Node<T>) {
         self.children.push(node);
     }
 
-    // get mut data
+    /// Get mut data
     pub fn data_mut(&mut self) -> &mut T {
         &mut self.data
     }
 
-    // get data
+    /// Get data
     pub fn data(&self) -> &T {
         &self.data
     }
 
+    /// Get child by index
+    /// 
     pub fn child(&self, index: usize) -> Option<&Node<T>> {
         self.children.get(index)
     }
 
+    /// Get last child
+    /// 
     pub fn last_child(&self) -> Option<&Node<T>> {
         self.children.last()
     }
 
+    /// Get mut child by index
+    /// 
     pub fn child_mut(&mut self, index: usize) -> Option<&mut Node<T>> {
         self.children.get_mut(index)
     }
 
+    /// Get last mut child
+    /// 
     pub fn last_child_mut(&mut self) -> Option<&mut Node<T>> {
         self.children.last_mut()
     }
 
+    /// Get children
     pub fn children(&self) -> &Vec<Node<T>> {
         &self.children
     }
 
+    /// Get mut children
     pub fn children_mut(&mut self) -> &mut Vec<Node<T>> {
         &mut self.children
     }
 
-    //
-    // 得到深度是level的第index个只读节点
-    // path: [0, 1, 3]
-    //
+    ///
+    /// Get child by a vec path
+    /// path: [0, 1, 3]
+    ///
     pub fn child_by_path(&self, path: &Vec<usize>) -> Option<&Node<T>> {
         let mut node: Option<&Node<T>> = Some(self);
         let level = path.len();
@@ -76,9 +87,10 @@ impl<T: Debug> Node<T> {
         return node;
     }
 
-    //
-    // 得到深度是level的第index个可写节点
-    //
+    ///
+    /// Get mut child by a vec path
+    /// path: [0, 1, 3]
+    ///
     pub fn child_mut_by_path(&mut self, path: &Vec<usize>) -> Option<&mut Node<T>> {
         let mut node: Option<&mut Node<T>> = Some(self);
         let level = path.len();
@@ -90,8 +102,8 @@ impl<T: Debug> Node<T> {
         return node;
     }
 
-    // tree traversal
-    // Preorder Traversal
+    ///  Deepth first traversal (Preorder) of a tree
+    ///  
     pub fn deepth_first_search<F: FnMut(&T)>(&self, mut f: F) {
         self.dfs_helper(&mut f);
     }
@@ -102,7 +114,8 @@ impl<T: Debug> Node<T> {
             child.dfs_helper(f);
         }
     }
-    // Level Order Traversal
+    /// Breadth first traversal (Level Order) of a tree
+    ///  
     pub fn breadth_first_search<F: FnMut(&T)>(&self, mut f: F) {
         let mut queue: VecDeque<&Node<T>> = VecDeque::new();
         queue.push_back(self);
