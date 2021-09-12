@@ -1,6 +1,6 @@
 [package]
 name = "common-tree"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["chen <chanble_cn@163.com>"]
 edition = "2018"
 description = "common tree lib"

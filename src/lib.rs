@@ -1,4 +1,4 @@
-//! 通用的树结构库
+//! 通用的树结构库 common tree data structure
 //! 
 
 mod node;

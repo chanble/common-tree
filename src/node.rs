@@ -100,6 +100,38 @@ impl<T> Node<T> {
         return node;
     }
 
+    ///
+    /// get right child by deepth
+    /// 
+    pub fn last_child_by_level(&self, level: usize) -> Option<&Node<T>> {
+        let mut node: Option<&Node<T>> = Some(self);
+        for _ in 0..level {
+            if node.is_some() {
+                node = node.unwrap().last_child()
+            } else {
+                node = None;
+                break;
+            }
+        }
+        node
+    }
+
+    ///
+    /// get right mut child by deepth
+    /// 
+    pub fn last_child_mut_by_level(&mut self, level: usize) -> Option<&mut Node<T>> {
+        let mut node: Option<&mut Node<T>> = Some(self);
+        for _ in 0..level {
+            if node.is_some() {
+                node = node.unwrap().last_child_mut()
+            } else {
+                node = None;
+                break;
+            }
+        }
+        node
+    }
+
     ///  Deepth first traversal (Preorder) of a tree
     ///  
     pub fn deepth_first_search<F: FnMut(&T)>(&self, mut f: F) {
@@ -135,7 +167,7 @@ mod tests {
         let mut node = Node::new(s.clone());
         assert_eq!(node.data(), &s);
         let s2 = format!("world");
-        let mut data = node.data_mut();
+        let data = node.data_mut();
         *data = s2.clone();
         assert_eq!(node.data(), &s2);
     }
@@ -175,6 +207,11 @@ mod tests {
         assert_eq!(level1_2_mut.data(), &level1_2_new_data);
     }
 
+    //    ---o(root)--
+    //   /            \
+    //  o(level1_1)    o(level1_2)
+    //                 /
+    //                o(level2_1)
     fn get_tree() -> Node<String> {
         let s = format!("root");
         let mut root = Node::new(s);
@@ -192,7 +229,7 @@ mod tests {
 
     #[test]
     fn child_path_works() {
-        let mut root = get_tree();
+        let root = get_tree();
         let root1: Option<&Node<String>> = root.child_by_path(&vec![0]);
         assert!(root1.is_some());
         assert_eq!(root1.unwrap().data(), &String::from("root"));
@@ -201,6 +238,15 @@ mod tests {
         assert_eq!(level2_1.unwrap().data(), &String::from("level2_1"));
     }
 
+    #[test]
+    fn last_child_level_works() {
+        let root = get_tree();
+        assert_eq!(root.last_child_by_level(0).unwrap().data(), &String::from("root"));
+        assert_eq!(root.last_child_by_level(1).unwrap().data(), &String::from("level1_2"));
+        assert_eq!(root.last_child_by_level(2).unwrap().data(), &String::from("level2_1"));
+        assert!(root.last_child_by_level(3).is_none());
+        assert!(root.last_child_by_level(4).is_none());
+    }
     //
     //       ------------------o(root)---------------
     //      /                                        \
@@ -231,7 +277,7 @@ mod tests {
 
     #[test]
     fn traversal_works() {
-        let mut root = get_tree2();
+        let root = get_tree2();
         let mut dfs_str = String::new();
         let mut bfs_str = String::new();
         root.deepth_first_search(|d| {
