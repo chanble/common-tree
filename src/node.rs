@@ -1,4 +1,3 @@
-
 use std::collections::VecDeque;
 
 /// A tree node
@@ -8,7 +7,6 @@ pub struct Node<T> {
 }
 
 impl<T> Node<T> {
-
     ///
     /// Create a Node
     ///
@@ -37,25 +35,25 @@ impl<T> Node<T> {
     }
 
     /// Get child by index
-    /// 
+    ///
     pub fn child(&self, index: usize) -> Option<&Node<T>> {
         self.children.get(index)
     }
 
     /// Get last child
-    /// 
+    ///
     pub fn last_child(&self) -> Option<&Node<T>> {
         self.children.last()
     }
 
     /// Get mut child by index
-    /// 
+    ///
     pub fn child_mut(&mut self, index: usize) -> Option<&mut Node<T>> {
         self.children.get_mut(index)
     }
 
     /// Get last mut child
-    /// 
+    ///
     pub fn last_child_mut(&mut self) -> Option<&mut Node<T>> {
         self.children.last_mut()
     }
@@ -102,7 +100,7 @@ impl<T> Node<T> {
 
     ///
     /// get right child by deepth
-    /// 
+    ///
     pub fn last_child_by_level(&self, level: usize) -> Option<&Node<T>> {
         let mut node: Option<&Node<T>> = Some(self);
         for _ in 0..level {
@@ -118,7 +116,7 @@ impl<T> Node<T> {
 
     ///
     /// get right mut child by deepth
-    /// 
+    ///
     pub fn last_child_mut_by_level(&mut self, level: usize) -> Option<&mut Node<T>> {
         let mut node: Option<&mut Node<T>> = Some(self);
         for _ in 0..level {
@@ -196,8 +194,8 @@ mod tests {
             &level2_1_data
         );
 
-        let level2_2_data = String::from("level2_2");
-        let level2_2 = Node::new(level2_2_data.clone());
+        // let level2_2_data = String::from("level2_2");
+        // let level2_2 = Node::new(level2_2_data.clone());
 
         let level1_2_mut_opt = root.child_mut(1);
         assert!(level1_2_mut_opt.is_some());
@@ -241,9 +239,18 @@ mod tests {
     #[test]
     fn last_child_level_works() {
         let root = get_tree();
-        assert_eq!(root.last_child_by_level(0).unwrap().data(), &String::from("root"));
-        assert_eq!(root.last_child_by_level(1).unwrap().data(), &String::from("level1_2"));
-        assert_eq!(root.last_child_by_level(2).unwrap().data(), &String::from("level2_1"));
+        assert_eq!(
+            root.last_child_by_level(0).unwrap().data(),
+            &String::from("root")
+        );
+        assert_eq!(
+            root.last_child_by_level(1).unwrap().data(),
+            &String::from("level1_2")
+        );
+        assert_eq!(
+            root.last_child_by_level(2).unwrap().data(),
+            &String::from("level2_1")
+        );
         assert!(root.last_child_by_level(3).is_none());
         assert!(root.last_child_by_level(4).is_none());
     }

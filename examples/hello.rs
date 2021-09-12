@@ -7,10 +7,7 @@ struct NodeData {
 
 impl NodeData {
     pub fn new(id: usize, name: String) -> Self {
-        Self {
-            id,
-            name,
-        }
+        Self { id, name }
     }
 
     pub fn print(&self) {
@@ -20,7 +17,6 @@ impl NodeData {
 type HellNode = Node<NodeData>;
 
 fn main() {
-
     let mut root = HellNode::new(NodeData::new(0, format!("root")));
 
     root.data().print();
@@ -36,7 +32,6 @@ fn main() {
 
     let level2_1_0 = HellNode::new(NodeData::new(3, format!("level2_1_0")));
 
-    
     level1_1.add(level2_1_0);
 
     root.add(level1_0);
